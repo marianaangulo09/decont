@@ -22,7 +22,7 @@ bash index.sh "/home/mariana/Linux_entregable/decont/res/contaminants.fasta" "/h
 # Merge the samples into a single file
 for file in /home/mariana/Linux_entregable/decont/data/*.fastq; do
     sample_id=$(basename "$file" | cut -d'_' -f1)
-    bash merge_fastqs.sh "$file" "/home/mariana/Linux_entregable/decont/out" "$sample_id"
+    bash merge_fastqs.sh "$file" "/home/mariana/Linux_entregable/decont/out"
 done
 
 
