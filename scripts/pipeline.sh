@@ -19,15 +19,12 @@ bash download.sh "/home/mariana/Linux_entregable/decont/data/cont" "/home/marian
 bash index.sh "/home/mariana/Linux_entregable/decont/res/contaminants.fasta" "/home/mariana/Linux_entregable/decont/res/contaminants_idx"
 
 
-
-
-
-
 # Merge the samples into a single file
-#for sid in $(<list_of_sample_ids>) #TODO
-#do
-#    bash scripts/merge_fastqs.sh data out/merged $sid
-#done
+for file in /home/mariana/Linux_entregable/decont/data/*.fastq; do
+    sample_id=$(basename "$file" | cut -d'_' -f1)
+    bash merge_fastqs.sh "$file" "/home/mariana/Linux_entregable/decont/out" "$sample_id"
+done
+
 
 # TODO: run cutadapt for all merged files
 # cutadapt -m 18 -a TGGAATTCTCGGGTGCCAAGG --discard-untrimmed \
