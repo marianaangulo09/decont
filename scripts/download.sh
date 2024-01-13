@@ -57,7 +57,6 @@ echo "Download completed. Files saved in '$destination_directory'."
 
 
 
-
 # This script should download the file specified in the first argument ($1),
 # place it in the directory specified in the second argument ($2),
 # and *optionally*:
