@@ -1,3 +1,25 @@
+#Script to download the data
+
+#Assign the variables 
+
+url_file=$1
+destination_directory=$2
+uncompress=$3
+exclude_keyword=$4
+expected_md5=$5
+
+# Create a 
+
+
+
+
+
+
+
+
+
+
+
 # This script should download the file specified in the first argument ($1),
 # place it in the directory specified in the second argument ($2),
 # and *optionally*:
