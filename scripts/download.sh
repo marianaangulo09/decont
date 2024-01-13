@@ -3,7 +3,8 @@
 #Assign the variables 
 
 # absolute path for the provided file
-destination_directory="/home/mariana/Linux_entregable/decont/data"
+url_file="$(realpath "$1")"
+destination_directory="$(realpath "$2")"
 uncompress=$3
 exclude_keyword=$4
 expected_md5=$5
@@ -32,31 +33,41 @@ for filepath in "$destination_directory"/*; do
     # Check if uncompress flag is set to "yes"
     if [ "$uncompress" == "yes" ]; then
         gunzip "$filepath"
-        filepath="${filepath%.gz}"  # Update filepath for uncompressed file
+        filepath="${filepath%.gz}"  
     fi
 
 # Calculate MD5 checksum for the downloaded file
     calculated_md5=$(calculate_md5 "$filepath")
 
-    # Compare MD5 checksums
+
+# Compare MD5 checksums if an expected MD5 is provided
     if [ -n "$expected_md5" ] && [ "$calculated_md5" != "$expected_md5" ]; then
         echo "Error: MD5 checksum mismatch for $(basename "$filepath"). Aborting."
         exit 1
     fi
 
- # Check if exclude keyword is provided
+    # Check if exclude keyword is provided
     if [ -n "$exclude_keyword" ]; then
         grep -v "$exclude_keyword" "$filepath" > "$destination_directory/filtered_$(basename "$filepath")"
         mv "$destination_directory/filtered_$(basename "$filepath")" "$filepath"
     fi
+
+    # Check for the corresponding MD5 file
+    md5_file="$filepath.md5"
+    if [ -f "$md5_file" ]; then
+        # Calculate MD5 checksum for the downloaded file
+        calculated_md5=$(calculate_md5 "$filepath")
+
+        # Compare MD5 checksums
+        if [ "$calculated_md5" != "$(cat "$md5_file")" ]; then
+            echo "Error: MD5 checksum mismatch for $(basename "$filepath"). Aborting."
+            exit 1
+        fi
+    fi
 done
 
+
 echo "Download completed. Files saved in '$destination_directory'."
-
-
-
-
-
 
 
 
