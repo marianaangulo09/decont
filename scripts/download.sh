@@ -7,8 +7,6 @@ url_file="$(realpath "$1")"
 destination_directory="$(realpath "$2")"
 uncompress=$3
 exclude_keyword=$4
-expected_md5=$5
-
 
 # Look for a file named 'urls' in the destination directory
 url_file="$destination_directory/urls"
@@ -18,7 +16,7 @@ mkdir -p "$destination_directory"
 
 
 # Download the files listed in the URL file
-wget -i "$url_file" -P "$destination_directory"
+wget -i "$url_file" -P "$destination_directory" -N --content-disposition
 
 
 # Function to calculate MD5 checksum for a file
@@ -36,11 +34,13 @@ for filepath in "$destination_directory"/*; do
         filepath="${filepath%.gz}"  
     fi
 
-# Calculate MD5 checksum for the downloaded file
+# Extract the expected MD5 from the URL
+    expected_md5=$(grep -oP '(?<=\.md5" data-md5=")[^"]+' "$url_file")
+
+    # Calculate MD5 checksum for the downloaded file
     calculated_md5=$(calculate_md5 "$filepath")
 
-
-# Compare MD5 checksums if an expected MD5 is provided
+    # Compare MD5 checksums
     if [ -n "$expected_md5" ] && [ "$calculated_md5" != "$expected_md5" ]; then
         echo "Error: MD5 checksum mismatch for $(basename "$filepath"). Aborting."
         exit 1
@@ -51,21 +51,7 @@ for filepath in "$destination_directory"/*; do
         grep -v "$exclude_keyword" "$filepath" > "$destination_directory/filtered_$(basename "$filepath")"
         mv "$destination_directory/filtered_$(basename "$filepath")" "$filepath"
     fi
-
-    # Check for the corresponding MD5 file
-    md5_file="$filepath.md5"
-    if [ -f "$md5_file" ]; then
-        # Calculate MD5 checksum for the downloaded file
-        calculated_md5=$(calculate_md5 "$filepath")
-
-        # Compare MD5 checksums
-        if [ "$calculated_md5" != "$(cat "$md5_file")" ]; then
-            echo "Error: MD5 checksum mismatch for $(basename "$filepath"). Aborting."
-            exit 1
-        fi
-    fi
 done
-
 
 echo "Download completed. Files saved in '$destination_directory'."
 
