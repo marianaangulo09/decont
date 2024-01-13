@@ -8,8 +8,6 @@ destination_directory="$(realpath "$2")"
 uncompress=$3
 exclude_keyword=$4
 
-# Look for a file named 'urls' in the destination directory
-url_file="$destination_directory/urls"
 
 #Create a  the directory for the downloaded data, as for this exercise we already have the data directory i set the pathway in the variable 
 mkdir -p "$destination_directory"
