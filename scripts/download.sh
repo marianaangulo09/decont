@@ -23,6 +23,25 @@ calculate_md5() {
 }
 
 
+# Loop through the downloaded files to uncompress, filter and check the MD5
+
+for filepath in "$destination_directory"/*; do
+    # Check if uncompress flag is set to "yes"
+    if [ "$uncompress" == "yes" ]; then
+        gunzip "$filepath"
+        filepath="${filepath%.gz}"  # Update filepath for uncompressed file
+    fi
+
+# Calculate MD5 checksum for the downloaded file
+    calculated_md5=$(calculate_md5 "$filepath")
+
+    # Compare MD5 checksums
+    if [ -n "$expected_md5" ] && [ "$calculated_md5" != "$expected_md5" ]; then
+        echo "Error: MD5 checksum mismatch for $(basename "$filepath"). Aborting."
+        exit 1
+    fi
+
+
 
 
 
