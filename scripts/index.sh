@@ -1,3 +1,11 @@
+# Assign the arguments to variables
+genomefile="$(realpath "$1")"
+outdir="$(realpath "$2")"
+
+# Create the directory for the STAR index
+mkdir -p "$outdir"
+
+
 # This script should index the genome file specified in the first argument ($1),
 # creating the index in a directory specified by the second argument ($2).
 
