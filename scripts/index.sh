@@ -6,6 +6,11 @@ outdir="$(realpath "$2")"
 mkdir -p "$outdir"
 
 
+# Run STAR command for genome indexing
+STAR --runThreadN 4 --runMode genomeGenerate --genomeDir "$outdir" \
+     --genomeFastaFiles "$genomefile" --genomeSAindexNbases 9
+
+
 # This script should index the genome file specified in the first argument ($1),
 # creating the index in a directory specified by the second argument ($2).
 
