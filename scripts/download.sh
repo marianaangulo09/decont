@@ -41,11 +41,14 @@ for filepath in "$destination_directory"/*; do
         exit 1
     fi
 
+ # Check if exclude keyword is provided
+    if [ -n "$exclude_keyword" ]; then
+        grep -v "$exclude_keyword" "$filepath" > "$destination_directory/filtered_$(basename "$filepath")"
+        mv "$destination_directory/filtered_$(basename "$filepath")" "$filepath"
+    fi
+done
 
-
-
-
-
+echo "Download completed. Files saved in '$destination_directory'."
 
 
 
