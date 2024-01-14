@@ -38,10 +38,14 @@ done
 log_directory="/home/mariana/Linux_entregable/decont/log"
 trimmed_directory="/home/mariana/Linux_entregable/decont/trimmed"
 
+
 # Create Directories if They Don't Exist
+mkdir -p "$log_directory"
 mkdir -p "$trimmed_directory"
 
-# Run cutadapt for Trimmed Files
+# Run cutadapt for all merged files
+
+
 for merged_file in "$output_directory"/*.fastq.gz; do
     sample_id=$(basename "$merged_file" | cut -d'_' -f1)
     trimmed_file="${trimmed_directory}/${sample_id}_trimmed.fastq.gz"
