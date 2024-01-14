@@ -78,22 +78,20 @@ contaminants_index="/home/mariana/Linux_entregable/decont/res/contaminants_idx"
 star_output_directory="/home/mariana/Linux_entregable/decont/out/star"
 
 
-mkdir -p "$star_output_directory"
-
 
 # TODO: run STAR for all trimmed files
 
 for trimmed_file in "$trimmed_directory"/*.fastq.gz; do
     sample_id=$(basename "$trimmed_file" | cut -d'_' -f1)
 
-mkdir -p "$star_output_directory/$sample_id"
+mkdir -p "$star_output_directory/$sample_id" 
 
 # Run STAR and append relevant information to the main log file
 
 
 STAR --runThreadN 4 --genomeDir "$contaminants_index" \
     --outReadsUnmapped Fastx --readFilesIn "$trimmed_file" \
-    --readFilesCommand gunzip -c --outFileNamePrefix "$output_directory/$sample_id" \
+    --readFilesCommand gunzip -c --outFileNamePrefix "$star_output_directory/$sample_id/" \
     2>&1 | tee -a "$log_file"
 
 
