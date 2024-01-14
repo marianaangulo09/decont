@@ -21,7 +21,7 @@ bash index.sh "/home/mariana/Linux_entregable/decont/res/contaminants.fasta" "/h
 # Merge the samples into a single file
 
 list_of_samples="/home/mariana/Linux_entregable/decont/data/*.fastq.gz"
-output_directory="/home/mariana/Linux_entregable/decont/out"
+output_directory="/home/mariana/Linux_entregable/decont/out/merged"
 
 
 for sample_file in $list_of_samples "/home/mariana/Linux_entregable/decont/data"; do
@@ -29,8 +29,16 @@ for sample_file in $list_of_samples "/home/mariana/Linux_entregable/decont/data"
     bash merge_fastqs.sh "$sample_file" "$output_directory" "$sample_id"
 done
 
-
 # TODO: run cutadapt for all merged files
+
+log_directory="/home/mariana/Linux_entregable/decont/log"
+trimmed_directory="/home/mariana/Linux_entregable/decont/trimmed"
+
+# Create Directories if They Don't Exist
+mkdir -p "$trimmed_directory"
+
+
+
 # cutadapt -m 18 -a TGGAATTCTCGGGTGCCAAGG --discard-untrimmed \
 #     -o <trimmed_file> <input_file> > <log_file>
 
