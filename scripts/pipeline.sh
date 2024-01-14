@@ -7,7 +7,7 @@ list_of_urls="/home/mariana/Linux_entregable/decont/data/urls"
 
 # Download all the files specified in the list_of_urls
 for url in $(<"$list_of_urls"); do
-    bash download.sh "/home/mariana/Linux_entregable/decont/data/urls" "/home/mariana/Linux_entregable/decont/data"  yes "exclude_keyword" 
+    bash download.sh "/home/mariana/Linux_entregable/decont/data/urls" "/home/mariana/Linux_entregable/decont/data"  "exclude_keyword" 
 done
 
 # Download the contaminants fasta file, uncompress it, and
@@ -33,8 +33,18 @@ for sample_file in $list_of_samples; do
 done
 
 
-# TODO: run cutadapt for all merged files
+#create the new file for the log.out 
 
+touch "$log.out"
+
+
+# create a directory and a file for the log cutadapt and  log star files 
+
+# Set the path for the main log file
+main_log_file="/home/mariana/Linux_entregable/decont/log/log.out"
+
+
+#variables
 log_directory="/home/mariana/Linux_entregable/decont/log/cutadapt"
 trimmed_directory="/home/mariana/Linux_entregable/decont/out/trimmed"
 
@@ -42,6 +52,7 @@ trimmed_directory="/home/mariana/Linux_entregable/decont/out/trimmed"
 # Create Directories if They Don't Exist
 mkdir -p "$log_directory"
 mkdir -p "$trimmed_directory"
+
 
 # Run cutadapt for all merged files
 
@@ -53,9 +64,16 @@ for merged_file in "$output_directory"/*.fastq.gz; do
 
     cutadapt -m 18 -a TGGAATTCTCGGGTGCCAAGG --discard-untrimmed \
         -o "$trimmed_file" "$merged_file" > "$log_file"
+
+#for filtering in the main log file
+
+echo "=== Cutadapt Log for $sample_id ===" >> "$main_log_file"
+    grep "Reads with adapters" "$log_file" >> "$main_log_file"
+    grep "Total basepairs processed" "$log_file" >> "$main_log_file"
+
 done
 
-
+#Variables for STAR
 contaminants_index="/home/mariana/Linux_entregable/decont/res/contaminants_idx"
 star_output_directory="/home/mariana/Linux_entregable/decont/out/star"
 
@@ -70,12 +88,22 @@ for trimmed_file in "$trimmed_directory"/*.fastq.gz; do
 
 mkdir -p "$star_output_directory/$sample_id"
 
+# Run STAR and append relevant information to the main log file
+
+
 STAR --runThreadN 4 --genomeDir "$contaminants_index" \
-        --outReadsUnmapped Fastx --readFilesIn <(gunzip -c "$trimmed_file") \
-        --readFilesCommand gunzip -c --outFileNamePrefix "$star_output_directory/$sample_id/"
+    --outReadsUnmapped Fastx --readFilesIn "$trimmed_file" \
+    --readFilesCommand gunzip -c --outFileNamePrefix "$output_directory/$sample_id" \
+    2>&1 | tee -a "$log_file"
+
+
+# Append information from STAR logs to the main log file
+echo "=== STAR Log for $sample_id ===" >> "$main_log_file"
+grep "Uniquely mapped reads %" "$log_file" >> "$main_log_file"
+grep "% of reads mapped to multiple loci" "$log_file" >> "$main_log_file"
+grep "% of reads mapped to too many loci" "$log_file" >> "$main_log_file"
+
 done
-
-
 
 
 # TODO: run STAR for all trimmed files
@@ -86,7 +114,7 @@ done
     # mkdir -p out/star/$sid
     # STAR --runThreadN 4 --genomeDir res/contaminants_idx \
     #    --outReadsUnmapped Fastx --readFilesIn <input_file> \
-    #    --readFilesCommand gunzip -c --outFileNamePrefix <output_directory>
+    #    --readFilesCommand gunzip -c --outFileNamePrefix <outp1ut_directory>
 #done 
 # TODO: create a log file containing information from cutadapt and star logs
 # (this should be a single log file, and information should be *appended* to it on each run)
