@@ -52,6 +52,28 @@ for merged_file in "$output_directory"/*.fastq.gz; do
 done
 
 
+contaminants_index="/home/mariana/Linux_entregable/decont/res/contaminants_idx"
+star_output_directory="/home/mariana/Linux_entregable/decont/out/star"
+
+
+mkdir -p "$star_output_directory"
+
+
+# TODO: run STAR for all trimmed files
+
+for trimmed_file in "$trimmed_directory"/*.fastq.gz; do
+    sample_id=$(basename "$trimmed_file" | cut -d'_' -f1)
+
+mkdir -p "$star_output_directory/$sample_id"
+
+STAR --runThreadN 4 --genomeDir "$contaminants_index" \
+        --outReadsUnmapped Fastx --readFilesIn <(gunzip -c "$trimmed_file") \
+        --readFilesCommand gunzip -c --outFileNamePrefix "$star_output_directory/$sample_id/"
+done
+
+
+
+
 # TODO: run STAR for all trimmed files
 #for fname in out/trimmed/*.fastq.gz
 #do
@@ -62,7 +84,7 @@ done
     #    --outReadsUnmapped Fastx --readFilesIn <input_file> \
     #    --readFilesCommand gunzip -c --outFileNamePrefix <output_directory>
 #done 
-
+ç
 # TODO: create a log file containing information from cutadapt and star logs
 # (this should be a single log file, and information should be *appended* to it on each run)
 # - cutadapt: Reads with adapters and total basepairs
