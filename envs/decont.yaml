@@ -1,0 +1,11 @@
+name: linuxavanzado
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - star
+  - cutadapt
+  - ca-certificates
+  - openssl
+prefix: /home/mariana/miniforge3/envs/linuxavanzado
