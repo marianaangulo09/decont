@@ -1,4 +1,5 @@
 
+#THis script remove created files 
 
 # Function to remove a directory if it exists
 remove_directory() {
@@ -20,7 +21,7 @@ else
     for arg in "$@"; do
         case "$arg" in
             "data"|"resources"|"output"|"logs")
-                remove_directory "$arg"
+                remove_directory "$(/bin/echo -n $arg)"
                 ;;
             *)
                 echo "Invalid argument: $arg. Valid arguments are: data, resources, output, logs"
