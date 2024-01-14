@@ -37,10 +37,16 @@ trimmed_directory="/home/mariana/Linux_entregable/decont/trimmed"
 # Create Directories if They Don't Exist
 mkdir -p "$trimmed_directory"
 
+# Run cutadapt for Trimmed Files
+for merged_file in "$output_directory"/*.fastq.gz; do
+    sample_id=$(basename "$merged_file" | cut -d'_' -f1)
+    trimmed_file="${trimmed_directory}/${sample_id}_trimmed.fastq.gz"
+    log_file="${log_directory}/${sample_id}_trimmed.log"
 
+    cutadapt -m 18 -a TGGAATTCTCGGGTGCCAAGG --discard-untrimmed \
+        -o "$trimmed_file" "$merged_file" > "$log_file"
+done
 
-# cutadapt -m 18 -a TGGAATTCTCGGGTGCCAAGG --discard-untrimmed \
-#     -o <trimmed_file> <input_file> > <log_file>
 
 # TODO: run STAR for all trimmed files
 #for fname in out/trimmed/*.fastq.gz
