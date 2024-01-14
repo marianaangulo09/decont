@@ -18,16 +18,20 @@ bash download.sh "/home/mariana/Linux_entregable/decont/data/cont" "/home/marian
 # Index the contaminants file
 bash index.sh "/home/mariana/Linux_entregable/decont/res/contaminants.fasta" "/home/mariana/Linux_entregable/decont/res/contaminants_idx"
 
+
 # Merge the samples into a single file
 
 list_of_samples="/home/mariana/Linux_entregable/decont/data/*.fastq.gz"
 output_directory="/home/mariana/Linux_entregable/decont/out/merged"
 
+# Create Directories if They Don't Exist
+mkdir -p "$output_directory"
 
-for sample_file in $list_of_samples "/home/mariana/Linux_entregable/decont/data"; do
+for sample_file in $list_of_samples; do
     sample_id=$(basename "$sample_file" | cut -d'_' -f1)
     bash merge_fastqs.sh "$sample_file" "$output_directory" "$sample_id"
 done
+
 
 # TODO: run cutadapt for all merged files
 
