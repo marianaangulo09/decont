@@ -35,8 +35,8 @@ done
 
 # TODO: run cutadapt for all merged files
 
-log_directory="/home/mariana/Linux_entregable/decont/log"
-trimmed_directory="/home/mariana/Linux_entregable/decont/trimmed"
+log_directory="/home/mariana/Linux_entregable/decont/log/cutadapt"
+trimmed_directory="/home/mariana/Linux_entregable/decont/out/trimmed"
 
 
 # Create Directories if They Don't Exist
@@ -49,7 +49,7 @@ mkdir -p "$trimmed_directory"
 for merged_file in "$output_directory"/*.fastq.gz; do
     sample_id=$(basename "$merged_file" | cut -d'_' -f1)
     trimmed_file="${trimmed_directory}/${sample_id}_trimmed.fastq.gz"
-    log_file="${log_directory}/${sample_id}_trimmed.log"
+    log_file="${log_directory}/${sample_id}.log"
 
     cutadapt -m 18 -a TGGAATTCTCGGGTGCCAAGG --discard-untrimmed \
         -o "$trimmed_file" "$merged_file" > "$log_file"
@@ -88,7 +88,6 @@ done
     #    --outReadsUnmapped Fastx --readFilesIn <input_file> \
     #    --readFilesCommand gunzip -c --outFileNamePrefix <output_directory>
 #done 
-ç
 # TODO: create a log file containing information from cutadapt and star logs
 # (this should be a single log file, and information should be *appended* to it on each run)
 # - cutadapt: Reads with adapters and total basepairs
